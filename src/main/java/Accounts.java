@@ -1,41 +1,31 @@
 public abstract class Accounts implements AccountOperations {
 
-    private int accNo;
+    private String accNo;
     private String accName;
     private String accType;
     protected double accBalance;
     private boolean accIsActive;
 
-    public Accounts(int accNo, String accName, String accType, double accBalance, boolean accIsActive) {
+    public Accounts(String accNo, String accName, String accType, double accBalance) {
         this.accNo = accNo;
         this.accName = accName;
         this.accType = accType;
         this.accBalance = accBalance;
-        this.accIsActive = accIsActive;
+        this.accIsActive = true;
     }
 
-    // Getters and setters
-    public int getAccNo() {
+    public String getAccNo() {
         return accNo;
-    }
-
-    public String getAccName() {
-        return accName;
     }
 
     public String getAccType() {
         return accType;
     }
 
-    public boolean isAccIsActive() {
-        return accIsActive;
-    }
-
     @Override
     public double checkBalance() {
         return accBalance;
     }
-
 
     public abstract void deposit(double amount) throws InvalidAmountException;
 

@@ -5,94 +5,71 @@ public class BankingApp {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        Accounts account = null;
+        boolean exit = false;
 
-        try {
-            System.out.println("----- Welcome to Banking Application -----");
-
-            System.out.print("Enter Account Number: ");
-            int accNo = sc.nextInt();
-
-            sc.nextLine(); // consume newline
-            System.out.print("Enter Account Holder Name: ");
-            String name = sc.nextLine();
-
-            System.out.print("Enter Initial Balance: ");
-            double balance = sc.nextDouble();
-
-            System.out.println("Select Account Type:");
-            System.out.println("1. Savings");
-            System.out.println("2. Current");
-            System.out.println("3. PF");
-            int choice = sc.nextInt();
-
-            switch (choice) {
-                case 1:
-                    account = new SavingsAccount(accNo, name, balance);
-                    break;
-
-                case 2:
-                    System.out.print("Enable Overdraft? (true/false): ");
-                    boolean od = sc.nextBoolean();
-                    account = new CurrentAccount(accNo, name, balance, od);
-                    break;
-
-                case 3:
-                    account = new PFAccount(accNo, name, balance);
-                    break;
-
-                default:
-                    System.out.println("Invalid account type selected");
-                    System.exit(0);
-            }
-
-            boolean exit = false;
-
-            while (!exit) {
-                System.out.println("\n----- Menu -----");
-                System.out.println("1. Check Balance");
-                System.out.println("2. Deposit");
-                System.out.println("3. Withdraw");
+        while (!exit) {
+            try {
+                System.out.println("\n--- Create New Account ---");
+                System.out.println("1. Savings");
+                System.out.println("2. Current");
+                System.out.println("3. PF");
                 System.out.println("4. Exit");
-                System.out.print("Choose an option: ");
+                System.out.print("Choose option: ");
 
-                int option = sc.nextInt();
+                int choice = sc.nextInt();
 
-                switch (option) {
+                if (choice == 4) {
+                    exit = true;
+                    System.out.println("Application Closed.");
+                    break;
+                }
+
+                sc.nextLine();
+                System.out.print("Enter Account Holder Name: ");
+                String name = sc.nextLine();
+
+                System.out.print("Enter Initial Balance: ");
+                double balance = sc.nextDouble();
+
+                Accounts account;
+
+                switch (choice) {
                     case 1:
-                        System.out.println("Current Balance: " + account.checkBalance());
+                        account = new SavingsAccount(
+                                AccountNumberGenerator.generateSavingsAccNo(),
+                                name, balance);
                         break;
 
                     case 2:
-                        System.out.print("Enter deposit amount: ");
-                        double depAmt = sc.nextDouble();
-                        account.deposit(depAmt);
-                        System.out.println("Deposit successful");
+                        System.out.print("Enable Overdraft (true/false): ");
+                        boolean od = sc.nextBoolean();
+                        account = new CurrentAccount(
+                                AccountNumberGenerator.generateCurrentAccNo(),
+                                name, balance, od);
                         break;
 
                     case 3:
-                        System.out.print("Enter withdrawal amount: ");
-                        double withAmt = sc.nextDouble();
-                        account.withdraw(withAmt);
-                        System.out.println("Withdrawal successful");
-                        break;
-
-                    case 4:
-                        exit = true;
-                        System.out.println("Thank you for using Banking App");
+                        account = new PFAccount(
+                                AccountNumberGenerator.generatePfAccNo(),
+                                name, balance);
                         break;
 
                     default:
-                        System.out.println("Invalid option");
+                        throw new InvalidAccountTypeException("Invalid account type selected");
                 }
-            }
 
-        } catch (InvalidAmountException e) {
-            System.out.println("Transaction Error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Invalid input. Please enter correct values.");
-        } finally {
-            sc.close();
+                System.out.println("Account Created Successfully");
+                System.out.println("Account No: " + account.getAccNo());
+                System.out.println("Account Type: " + account.getAccType());
+                System.out.println("Balance: " + account.checkBalance());
+
+            } catch (InvalidAccountTypeException | InvalidAmountException e) {
+                System.out.println("Error: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please try again.");
+                sc.nextLine();
+            }
         }
+        sc.close();
     }
 }

@@ -1,40 +1,25 @@
 public class CurrentAccount extends Accounts {
 
-    private boolean isOdEnabled;
+    private boolean odEnabled;
 
-    public CurrentAccount(int accNo, String accName, double balance, boolean isOdEnabled) {
-        super(accNo, accName, "CURRENT", balance, true);
-        this.isOdEnabled = isOdEnabled;
-    }
-
-    public boolean isOdEnabled() {
-        return isOdEnabled;
-    }
-
-    public void setOdEnabled(boolean odEnabled) {
-        isOdEnabled = odEnabled;
+    public CurrentAccount(String accNo, String name, double balance, boolean odEnabled) {
+        super(accNo, name, "CURRENT", balance);
+        this.odEnabled = odEnabled;
     }
 
     @Override
     public void deposit(double amount) throws InvalidAmountException {
-        if (amount <= 0) {
+        if (amount <= 0)
             throw new InvalidAmountException("Deposit must be positive");
-        }
         accBalance += amount;
     }
 
     @Override
     public void withdraw(double amount) throws InvalidAmountException {
-        if (amount <= 0) {
-            throw new InvalidAmountException("Invalid withdrawal amount");
-        }
-        if (amount > 25000) {
-            throw new InvalidAmountException("Current account allows max 25000 per transaction");
-        }
-        if (amount > accBalance && !isOdEnabled) {
+        if (amount > 25000)
+            throw new InvalidAmountException("Current withdrawal limit is 25000");
+        if (amount > accBalance && !odEnabled)
             throw new InvalidAmountException("Overdraft not enabled");
-        }
         accBalance -= amount;
     }
 }
-

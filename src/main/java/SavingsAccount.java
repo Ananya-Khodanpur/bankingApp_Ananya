@@ -1,29 +1,22 @@
 public class SavingsAccount extends Accounts {
 
-    public SavingsAccount(int accNo, String accName, double balance) {
-        super(accNo, accName, "SAVINGS", balance, true);
+    public SavingsAccount(String accNo, String name, double balance) {
+        super(accNo, name, "SAVINGS", balance,true);
     }
 
     @Override
     public void deposit(double amount) throws InvalidAmountException {
-        if (amount <= 0) {
-            throw new InvalidAmountException("Deposit amount must be greater than zero");
-        }
+        if (amount <= 0)
+            throw new InvalidAmountException("Deposit must be positive");
         accBalance += amount;
     }
 
     @Override
     public void withdraw(double amount) throws InvalidAmountException {
-        if (amount <= 0) {
-            throw new InvalidAmountException("Invalid withdrawal amount");
-        }
-        if (amount > 5000) {
-            throw new InvalidAmountException("Savings account allows max 5000 per transaction");
-        }
-        if (amount > accBalance) {
+        if (amount > 5000)
+            throw new InvalidAmountException("Savings withdrawal limit is 5000");
+        if (amount > accBalance)
             throw new InvalidAmountException("Insufficient balance");
-        }
         accBalance -= amount;
     }
 }
-
